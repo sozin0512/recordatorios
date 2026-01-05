@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Pedidos Pro - Multi-Producto</title>
+    <title>Gestor de Pedidos Pro - Reportes por Categoría</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -47,7 +47,6 @@
             width: 100%;
         }
 
-        /* Ocultar flechas de input number */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -102,14 +101,14 @@
         <header class="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
             <div>
                 <h1 class="text-3xl font-black text-slate-900">Control de Negocio</h1>
-                <p class="text-slate-500 text-sm">Registro de ventas y catálogo de productos.</p>
+                <p class="text-slate-500 text-sm">Gestión de tallas y reportes por categoría.</p>
             </div>
             <div class="flex gap-2">
                 <button onclick="openCreateForm()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition shadow-md">+ Crear Pedido</button>
             </div>
         </header>
 
-        <!-- Formulario de Pedido Mejorado -->
+        <!-- Formulario de Pedido -->
         <div id="order-form-container" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <div class="p-6 border-b border-slate-100 flex justify-between items-center">
@@ -126,30 +125,16 @@
                             <input type="text" id="customer" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nombre del cliente">
                         </div>
                         <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Categoría / Grupo</label>
+                            <input type="text" id="category" list="category-list" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: Uniformes de Física">
+                            <datalist id="category-list"></datalist>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                             <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Fecha de Entrega</label>
                             <input type="datetime-local" id="delivery-date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                    </div>
-
-                    <!-- Sección de Productos Dinámicos -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                        <div class="flex justify-between items-center mb-3">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Productos en este pedido</label>
-                            <button type="button" onclick="addProductField()" class="text-blue-600 text-xs font-bold hover:underline">+ Añadir otro</button>
-                        </div>
-                        <div id="products-container" class="space-y-3">
-                            <!-- Los campos de productos se insertan aquí -->
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Costo Total Material (L)</label>
-                            <input type="number" id="cost-price" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Precio Venta Total (L)</label>
-                            <input type="number" id="price" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Prioridad</label>
@@ -160,9 +145,28 @@
                         </div>
                     </div>
 
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase">Productos y Tallas</label>
+                            <button type="button" onclick="addProductField()" class="text-blue-600 text-xs font-bold hover:underline">+ Añadir otro</button>
+                        </div>
+                        <div id="products-container" class="space-y-3"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Costo Total Material (L)</label>
+                            <input type="number" id="cost-price" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Precio Venta Total (L)</label>
+                            <input type="number" id="price" step="0.01" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                        </div>
+                    </div>
+
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Notas / Especificaciones</label>
-                        <textarea id="details" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Tallas, colores o requisitos especiales..."></textarea>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Notas Especiales</label>
+                        <textarea id="details" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Cualquier detalle extra..."></textarea>
                     </div>
 
                     <div class="flex gap-3 pt-4 border-t border-slate-100">
@@ -174,15 +178,25 @@
         </div>
 
         <!-- Filtros y Búsqueda -->
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 mb-6">
-            <div class="relative flex-1">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center gap-4 mb-6">
+            <div class="relative flex-1 w-full">
                 <span class="absolute left-4 top-2.5 text-slate-400">🔍</span>
                 <input type="text" id="search" placeholder="Buscar cliente o producto..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 outline-none focus:ring-2 focus:ring-blue-400 transition">
             </div>
-            <select id="filter-status" class="px-4 py-2.5 rounded-xl bg-slate-50 outline-none focus:ring-2 focus:ring-blue-400 transition font-medium text-slate-600">
+            
+            <div class="flex items-center gap-2 w-full md:w-auto">
+                <select id="filter-category" class="flex-1 md:w-48 px-4 py-2.5 rounded-xl bg-slate-50 outline-none focus:ring-2 focus:ring-blue-400 transition font-medium text-slate-600">
+                    <option value="all">Todas las categorías</option>
+                </select>
+                <button id="btn-download-category" onclick="downloadCurrentCategory()" title="Descargar reporte de esta categoría" class="hidden p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
+                    📥 <span class="hidden md:inline ml-1 text-xs font-bold uppercase">Reporte</span>
+                </button>
+            </div>
+
+            <select id="filter-status" class="w-full md:w-auto px-4 py-2.5 rounded-xl bg-slate-50 outline-none focus:ring-2 focus:ring-blue-400 transition font-medium text-slate-600">
                 <option value="all">Todos los estados</option>
-                <option value="pending">Solo pendientes</option>
-                <option value="completed">Solo entregados</option>
+                <option value="pending">Pendientes</option>
+                <option value="completed">Entregados</option>
             </select>
         </div>
 
@@ -195,15 +209,18 @@
     </div>
 
     <script>
-        // Versión V7: Soporte Multi-Producto
-        let orders = JSON.parse(localStorage.getItem('biz_orders_v7')) || [];
-        let catalog = JSON.parse(localStorage.getItem('biz_catalog_v7')) || ["Anillo", "Reloj", "Cadena", "Pulsera", "Aretes", "Dije"];
+        // Versión V9: Reportes Consolidados por Categoría
+        let orders = JSON.parse(localStorage.getItem('biz_orders_v9')) || [];
+        let catalog = JSON.parse(localStorage.getItem('biz_catalog_v9')) || ["Camiseta", "Pantalón", "Buzo", "Chaqueta"];
+        let categories = JSON.parse(localStorage.getItem('biz_categories_v9')) || ["General", "Uniformes de Física"];
         let myChart = null;
 
         const productsContainer = document.getElementById('products-container');
         const catalogDatalist = document.getElementById('catalog-options');
+        const categoryDatalist = document.getElementById('category-list');
         const ordersList = document.getElementById('orders-list');
         const emptyState = document.getElementById('empty-state');
+        const btnDownloadCat = document.getElementById('btn-download-category');
 
         window.onload = () => {
             updateCatalogUI();
@@ -212,16 +229,20 @@
         };
 
         function toggleForm() { 
-            const el = document.getElementById('order-form-container');
-            el.classList.toggle('hidden');
+            document.getElementById('order-form-container').classList.toggle('hidden');
         }
 
-        function addProductField(value = "") {
+        function addProductField(name = "", size = "") {
             const div = document.createElement('div');
-            div.className = "flex gap-2 group";
+            div.className = "flex flex-col md:flex-row gap-2 p-2 bg-white rounded-xl border border-slate-100 shadow-sm relative group";
             div.innerHTML = `
-                <input list="catalog-options" type="text" value="${value}" required class="product-input flex-1 bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Ej: Anillo de plata">
-                <button type="button" onclick="this.parentElement.remove()" class="text-slate-300 hover:text-red-500 px-2 transition">&times;</button>
+                <div class="flex-1">
+                    <input list="catalog-options" type="text" value="${name}" required class="product-input w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Producto">
+                </div>
+                <div class="w-full md:w-32">
+                    <input type="text" value="${size}" class="size-input w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500" placeholder="Talla (S, M, L, 32...)">
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="absolute -right-2 -top-2 md:relative md:right-0 md:top-0 bg-red-50 text-red-500 rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-500 hover:text-white transition">&times;</button>
             `;
             productsContainer.appendChild(div);
         }
@@ -231,7 +252,7 @@
             document.getElementById('edit-id').value = "";
             document.getElementById('order-form').reset();
             productsContainer.innerHTML = '';
-            addProductField(); // Empezar con un campo vacío
+            addProductField();
             toggleForm();
         }
 
@@ -242,26 +263,55 @@
                 opt.value = item;
                 catalogDatalist.appendChild(opt);
             });
+
+            categoryDatalist.innerHTML = '';
+            const filterCategory = document.getElementById('filter-category');
+            const currentFilter = filterCategory.value;
+            filterCategory.innerHTML = '<option value="all">Todas las categorías</option>';
+
+            categories.sort().forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                categoryDatalist.appendChild(opt);
+                
+                const filterOpt = document.createElement('option');
+                filterOpt.value = cat;
+                filterOpt.innerText = cat;
+                filterCategory.appendChild(filterOpt);
+            });
+            filterCategory.value = currentFilter;
+            checkDownloadBtnVisibility();
+        }
+
+        function checkDownloadBtnVisibility() {
+            const filterValue = document.getElementById('filter-category').value;
+            btnDownloadCat.classList.toggle('hidden', filterValue === 'all');
         }
 
         document.getElementById('order-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const editId = document.getElementById('edit-id').value;
             
-            // Recolectar productos y actualizar catálogo
             const productInputs = document.querySelectorAll('.product-input');
+            const sizeInputs = document.querySelectorAll('.size-input');
             const items = [];
-            productInputs.forEach(input => {
-                const val = input.value.trim();
-                if (val) {
-                    items.push(val);
-                    if (!catalog.includes(val)) catalog.push(val);
+            
+            productInputs.forEach((input, i) => {
+                const name = input.value.trim();
+                const size = sizeInputs[i].value.trim();
+                if (name) {
+                    items.push({ name, size });
+                    if (!catalog.includes(name)) catalog.push(name);
                 }
             });
+
+            const cat = document.getElementById('category').value.trim() || "General";
+            if (!categories.includes(cat)) categories.push(cat);
 
             const orderData = {
                 id: editId ? parseInt(editId) : Date.now(),
                 customer: document.getElementById('customer').value,
+                category: cat,
                 products: items,
                 costPrice: parseFloat(document.getElementById('cost-price').value) || 0,
                 price: parseFloat(document.getElementById('price').value) || 0,
@@ -279,13 +329,75 @@
                 orders.push(orderData);
             }
 
-            localStorage.setItem('biz_orders_v7', JSON.stringify(orders));
-            localStorage.setItem('biz_catalog_v7', JSON.stringify(catalog));
+            localStorage.setItem('biz_orders_v9', JSON.stringify(orders));
+            localStorage.setItem('biz_catalog_v9', JSON.stringify(catalog));
+            localStorage.setItem('biz_categories_v9', JSON.stringify(categories));
             
             updateCatalogUI();
             toggleForm();
             renderOrders();
         });
+
+        // FUNCIÓN CLAVE: DESCARGA CONSOLIDADA POR CATEGORÍA
+        function downloadCurrentCategory() {
+            const catToDownload = document.getElementById('filter-category').value;
+            if (catToDownload === 'all') return;
+
+            const filteredOrders = orders.filter(o => o.category === catToDownload)
+                                          .sort((a, b) => a.customer.localeCompare(b.customer));
+
+            if (filteredOrders.length === 0) {
+                showToast("No hay pedidos en esta categoría para descargar.");
+                return;
+            }
+
+            let content = `REPORTE DE PRODUCCIÓN - CATEGORÍA: ${catToDownload.toUpperCase()}\n`;
+            content += `Generado el: ${new Date().toLocaleString()}\n`;
+            content += `Total de pedidos: ${filteredOrders.length}\n`;
+            content += `==========================================================\n\n`;
+
+            filteredOrders.forEach((o, index) => {
+                content += `${index + 1}. CLIENTE: ${o.customer}\n`;
+                content += `   PRODUCTOS Y TALLAS:\n`;
+                o.products.forEach(p => {
+                    content += `   - ${p.name} (Talla: ${p.size || 'No especificada'})\n`;
+                });
+                if (o.details) content += `   NOTAS: ${o.details}\n`;
+                content += `   ESTADO: ${o.completed ? '[ENTREGADO]' : '[PENDIENTE]'}\n`;
+                content += `----------------------------------------------------------\n`;
+            });
+
+            content += `\nFin del reporte de ${catToDownload}.`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Reporte_${catToDownload.replace(/\s+/g, '_')}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showToast("Reporte consolidado descargado con éxito.");
+        }
+
+        // Descarga individual (se mantiene como comprobante rápido)
+        function downloadOrder(id) {
+            const order = orders.find(o => o.id === id);
+            if (!order) return;
+
+            let content = `COMPROBANTE INDIVIDUAL\n`;
+            content += `CLIENTE: ${order.customer}\n`;
+            content += `CATEGORÍA: ${order.category}\n`;
+            content += `PRODUCTOS:\n`;
+            order.products.forEach(p => content += `- ${p.name} (Talla: ${p.size || 'N/A'})\n`);
+            content += `TOTAL: L ${order.price.toLocaleString()}`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Pedido_${order.customer}.txt`;
+            a.click();
+        }
 
         function editOrder(id) {
             const order = orders.find(o => o.id === id);
@@ -294,6 +406,7 @@
             document.getElementById('form-title').innerText = "Editar Registro";
             document.getElementById('edit-id').value = order.id;
             document.getElementById('customer').value = order.customer;
+            document.getElementById('category').value = order.category;
             document.getElementById('delivery-date').value = order.date;
             document.getElementById('cost-price').value = order.costPrice;
             document.getElementById('price').value = order.price;
@@ -301,7 +414,7 @@
             document.getElementById('details').value = order.details;
 
             productsContainer.innerHTML = '';
-            order.products.forEach(p => addProductField(p));
+            order.products.forEach(p => addProductField(p.name, p.size));
             if (order.products.length === 0) addProductField();
 
             toggleForm();
@@ -310,7 +423,7 @@
         function deleteOrder(id) {
             if (confirm("¿Eliminar este registro permanentemente?")) {
                 orders = orders.filter(o => o.id !== id);
-                localStorage.setItem('biz_orders_v7', JSON.stringify(orders));
+                localStorage.setItem('biz_orders_v9', JSON.stringify(orders));
                 renderOrders();
             }
         }
@@ -319,7 +432,7 @@
             const order = orders.find(o => o.id === id);
             if (order) {
                 order.completed = !order.completed;
-                localStorage.setItem('biz_orders_v7', JSON.stringify(orders));
+                localStorage.setItem('biz_orders_v9', JSON.stringify(orders));
                 renderOrders();
             }
         }
@@ -328,17 +441,20 @@
             updateStats();
             updateChart();
             renderHistory();
+            checkDownloadBtnVisibility();
 
             const term = document.getElementById('search').value.toLowerCase();
-            const filter = document.getElementById('filter-status').value;
+            const filterCat = document.getElementById('filter-category').value;
+            const filterStatus = document.getElementById('filter-status').value;
 
             const filtered = orders.filter(o => {
                 const textMatch = o.customer.toLowerCase().includes(term) || 
-                                  o.products.join(' ').toLowerCase().includes(term);
-                const statusMatch = filter === 'all' || 
-                                    (filter === 'pending' && !o.completed) || 
-                                    (filter === 'completed' && o.completed);
-                return textMatch && statusMatch;
+                                  o.products.some(p => p.name.toLowerCase().includes(term));
+                const categoryMatch = filterCat === 'all' || o.category === filterCat;
+                const statusMatch = filterStatus === 'all' || 
+                                    (filterStatus === 'pending' && !o.completed) || 
+                                    (filterStatus === 'completed' && o.completed);
+                return textMatch && categoryMatch && statusMatch;
             }).sort((a, b) => new Date(a.date) - new Date(b.date));
 
             ordersList.innerHTML = '';
@@ -354,21 +470,26 @@
                     card.className = `order-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm ${o.completed ? 'status-completed' : (isDue ? 'status-due' : 'status-upcoming')} flex flex-col md:flex-row justify-between items-center gap-4`;
                     
                     card.innerHTML = `
-                        <div class="flex-1 w-full">
-                            <div class="flex items-center gap-2 mb-2">
+                        <div class="flex-1 w-full text-center md:text-left">
+                            <div class="flex flex-col md:flex-row md:items-center gap-2 mb-2">
                                 <span class="font-bold text-slate-800 text-lg">${o.customer}</span>
-                                ${o.priority === 'alta' ? '<span class="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">Prioridad Alta</span>' : ''}
+                                <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-bold uppercase">${o.category}</span>
+                                ${o.priority === 'alta' ? '<span class="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter self-center">Alta 🚀</span>' : ''}
                             </div>
-                            <div class="flex flex-wrap gap-1.5 mb-3">
-                                ${o.products.map(p => `<span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-md font-medium border border-blue-100">${p}</span>`).join('')}
+                            <div class="flex flex-wrap gap-1.5 mb-3 justify-center md:justify-start">
+                                ${o.products.map(p => `
+                                    <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded-md font-medium border border-blue-100">
+                                        ${p.name} <span class="text-blue-400">| T: ${p.size || '?'}</span>
+                                    </span>
+                                `).join('')}
                             </div>
-                            <div class="flex flex-wrap gap-4 text-[11px] font-bold">
+                            <div class="flex flex-wrap gap-4 text-[11px] font-bold justify-center md:justify-start">
                                 <span class="text-slate-400">📅 ${new Date(o.date).toLocaleDateString()}</span>
                                 <span class="text-slate-600">Venta: L ${o.price.toLocaleString()}</span>
-                                <span class="${profit >= 0 ? 'text-emerald-600' : 'text-red-600'}">Utilidad: L ${profit.toLocaleString()}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
+                            <button onclick="downloadOrder(${o.id})" title="Descargar comprobante individual" class="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition">📄</button>
                             <button onclick="toggleComplete(${o.id})" class="px-5 py-2.5 rounded-xl text-xs font-bold transition ${o.completed ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-900 text-white'}">
                                 ${o.completed ? '✓ Entregado' : 'Entregar'}
                             </button>
@@ -457,7 +578,7 @@
                     if (!o.completed && !o.reminded && new Date(o.date) <= now) {
                         showToast(`Es hora de entregar el pedido de ${o.customer}`);
                         o.reminded = true;
-                        localStorage.setItem('biz_orders_v7', JSON.stringify(orders));
+                        localStorage.setItem('biz_orders_v9', JSON.stringify(orders));
                     }
                 });
             }, 20000);
@@ -473,6 +594,7 @@
 
         document.getElementById('search').addEventListener('input', renderOrders);
         document.getElementById('filter-status').addEventListener('change', renderOrders);
+        document.getElementById('filter-category').addEventListener('change', renderOrders);
     </script>
 </body>
 </html>
